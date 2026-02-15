@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>StyleSphere Clone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- USER MODAL -->
+    <div class="modal fade" id="userModal" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content p-3">
+                <h5>Welcome 👋</h5>
+                <input id="uName" class="form-control my-2" placeholder="Name">
+                <input id="uEmail" class="form-control my-2" placeholder="Email">
+                <input id="uPhone" class="form-control my-2" placeholder="Phone">
+                <button class="btn btn-primary" onclick="saveUser()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg shadow-sm px-3">
+        <a class="navbar-brand fw-bold" href="#" onclick="showPage('home')">StyleSphere</a>
+
+        <div class="navbar-nav me-auto">
+            <a class="nav-link" onclick="openAllProducts()">Shop</a>
+            <a class="nav-link" onclick="filterNew()">New Arrivals</a>
+            <a class="nav-link" onclick="filterSale()">Sale</a>
+        </div>
+
+        <input id="searchInput" class="form-control w-25" placeholder="Search">
+
+        <div class="ms-3 d-flex align-items-center gap-2">
+            <span id="navUser">Hi, User</span>
+            <button class="btn btn-sm btn-outline-secondary" onclick="toggleDark()">🌙</button>
+            <button class="btn btn-sm" onclick="showPage('wishlist')">❤️ <span id="wishCount">0</span></button>
+            <button class="btn btn-sm" onclick="showPage('cart')">🛒 <span id="cartCount">0</span></button>
+            <button class="btn btn-sm btn-outline-primary" onclick="showPage('profile')">👤</button>
+        </div>
+    </nav>
+
+    <!-- HOME -->
+    <section id="home" class="page active">
+        <div class="hero">
+            <div class="hero-overlay">
+                <div class="container hero-content">
+                    <span class="badge bg-danger mb-3">New Collection 2026</span>
+                    <h1 class="display-4 fw-bold">Discover Your Unique Style</h1>
+                    <p class="lead mb-4">
+                        Explore our curated collection of fashion-forward clothing and accessories
+                        designed to elevate your everyday look.
+                    </p>
+
+                    <button class="btn btn-primary btn-lg me-3" onclick="openAllProducts()">Shop Now</button>
+                    <button class="btn btn-outline-light btn-lg" onclick="openAllProducts()">New Arrivals</button>
+                </div>
+            </div>
+        </div>
+        <!-- CATEGORY SECTION -->
+        <div class="container py-5">
+            <h2 class="fw-bold mb-2">Shop by Category</h2>
+            <p class="text-muted mb-4">Discover our wide range of fashion categories</p>
+
+            <div class="row g-4">
+
+                <div class="col-md-3">
+                    <div class="category-card" onclick="filterCategory('men')">
+                        <img src="https://images.unsplash.com/photo-1516257984-b1b4d707412e">
+                        <div class="cat-overlay">Men →</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="category-card" onclick="filterCategory('women')">
+                        <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b">
+                        <div class="cat-overlay">Women →</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="category-card" onclick="filterCategory('accessories')">
+                        <img src="https://images.unsplash.com/photo-1509695507497-903c140c43b0">
+                        <div class="cat-overlay">Accessories →</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="category-card" onclick="filterCategory('shoes')">
+                        <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772">
+                        <div class="cat-overlay">Shoes →</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- FEATURED PRODUCTS -->
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="fw-bold">Featured Products</h2>
+            </div>
+
+            <div class="row" id="featuredGrid"></div>
+
+            <div class="text-center mt-4">
+                <button class="btn btn-primary btn-lg" onclick="openAllProducts()">
+                    View All Products →
+                </button>
+            </div>
+        </div>
+        <!-- SALE BANNER -->
+        <div class="container pb-5">
+            <div class="sale-banner">
+                <div class="sale-content">
+                    <span class="badge bg-danger mb-2">Limited Time Offer</span>
+                    <h2 class="fw-bold text-white">Up to 50% Off</h2>
+                    <p class="text-light mb-3">
+                        Don't miss out on our biggest sale of the season.
+                    </p>
+                    <button class="btn btn-primary btn-lg" onclick="filterSale()">
+                        Shop Sale →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="products" class="page container py-4">
+        <div class="d-flex justify-content-between">
+            <h3>Products</h3>
+            <select id="sortSelect" onchange="renderProducts()" class="form-select w-auto">
+                <option value="featured">Featured</option>
+                <option value="low">Price Low→High</option>
+                <option value="high">Price High→Low</option>
+            </select>
+        </div>
+        <div class="row mt-3" id="productGrid"></div>
+    </section>
+
+    <!-- PRODUCT DETAIL -->
+    <section id="detail" class="page container py-4">
+        <div id="detailBody"></div>
+    </section>
+
+    <!-- CART -->
+    <section id="cart" class="page container py-4">
+        <h3>Shopping Cart</h3>
+        <div id="cartBody"></div>
+    </section>
+
+    <!-- WISHLIST -->
+    <section id="wishlist" class="page container py-4">
+        <h3>Wishlist</h3>
+        <div id="wishBody"></div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="profile" class="page container py-4">
+        <h3>My Profile</h3>
+        <div id="profileBody"></div>
+    </section>
+
+    <footer class="footer mt-5">
+        <div class="container">
+            <div class="row">
+                <!-- Brand -->
+                <div class="col-md-3 mb-4">
+                    <h5 class="fw-bold">StyleSphere</h5>
+                    <p>Your one-stop destination for modern fashion and lifestyle products.</p>
+                    <div class="d-flex gap-3 fs-4">
+                        <a href="https://facebook.com" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://twitter.com" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="https://youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+                <!-- Shop -->
+                <div class="col-md-3 mb-4">
+                    <h6>Shop</h6>
+                    <ul class="footer-links">
+                        <li onclick="filterCategory('men')">Men</li>
+                        <li onclick="filterCategory('women')">Women</li>
+                        <li onclick="filterCategory('accessories')">Accessories</li>
+                        <li onclick="filterCategory('shoes')">Shoes</li>
+                        <li onclick="filterNew()">New Arrivals</li>
+                        <li onclick="filterSale()">Sale</li>
+                    </ul>
+                </div>
+                <!-- Company -->
+                <div class="col-md-3 mb-4">
+                    <h6>Company</h6>
+                    <ul class="footer-links">
+                        <li onclick="showInfo('about')">About Us</li>
+                        <li onclick="showInfo('careers')">Careers</li>
+                        <li onclick="showInfo('press')">Press</li>
+                        <li onclick="showInfo('blog')">Blog</li>
+                    </ul>
+                </div>
+                <!-- Support -->
+                <div class="col-md-3 mb-4">
+                    <h6>Support</h6>
+                    <ul class="footer-links">
+                        <li onclick="showInfo('contact')">Contact Us</li>
+                        <li onclick="showInfo('faq')">FAQs</li>
+                        <li onclick="showInfo('shipping')">Shipping Info</li>
+                        <li onclick="showInfo('returns')">Returns</li>
+                        <li onclick="showInfo('size')">Size Guide</li>
+                    </ul>
+                    <h6 class="mt-3">Newsletter</h6>
+                    <div class="d-flex gap-2">
+                        <input id="newsEmail" class="form-control form-control-sm" placeholder="Email">
+                        <button class="btn btn-primary btn-sm" onclick="subscribeNews()">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between flex-wrap small">
+                <span>© 2026 StyleSphere. All rights reserved.</span>
+                <div class="d-flex gap-3">
+                    <span class="footer-links" onclick="showInfo('privacy')">Privacy Policy</span>
+                    <span class="footer-links" onclick="showInfo('terms')">Terms of Service</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
